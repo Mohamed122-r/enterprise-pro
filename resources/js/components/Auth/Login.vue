@@ -1,136 +1,612 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Or
-          <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-            start your 14-day free trial
-          </a>
-        </p>
-      </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label for="email" class="sr-only">Email address</label>
-            <input
-              id="email"
-              v-model="form.email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-            >
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            <input
-              id="password"
-              v-model="form.password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Password"
-            >
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="remember-me"
-              v-model="form.remember"
-              name="remember-me"
-              type="checkbox"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            >
-            <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-              Remember me
-            </label>
-          </div>
-
-          <div class="text-sm">
-            <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-              Forgot your password?
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <button
-            type="submit"
-            :disabled="isLoading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-          >
-            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-              <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-              </svg>
-            </span>
-            {{ isLoading ? 'Signing in...' : 'Sign in' }}
-          </button>
-        </div>
-
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
+    <div class="login-container">
+        <div class="login-background"></div>
+        
+        <div class="login-card">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="logo-icon">🚀</i>
+                </div>
+                <h1 class="app-title">Enterprise Pro</h1>
+                <p class="app-subtitle">Complete Business Management System</p>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
-                {{ error }}
-              </h3>
+
+            <!-- Login Form -->
+            <form @submit.prevent="handleLogin" class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="icon">📧</i>
+                        Email Address
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        v-model="form.email"
+                        required
+                        class="form-input"
+                        placeholder="Enter your email"
+                        :class="{ 'error': errors.email }"
+                    >
+                    <span v-if="errors.email" class="error-text">{{ errors.email }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="icon">🔒</i>
+                        Password
+                    </label>
+                    <div class="password-input-container">
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            id="password"
+                            v-model="form.password"
+                            required
+                            class="form-input"
+                            placeholder="Enter your password"
+                            :class="{ 'error': errors.password }"
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            @click="showPassword = !showPassword"
+                        >
+                            <i class="icon">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</i>
+                        </button>
+                    </div>
+                    <span v-if="errors.password" class="error-text">{{ errors.password }}</span>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" v-model="form.remember">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="/forgot-password" class="forgot-password">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Login Button -->
+                <button
+                    type="submit"
+                    class="login-btn"
+                    :disabled="loading"
+                    :class="{ 'loading': loading }"
+                >
+                    <span v-if="!loading">
+                        <i class="icon">🔑</i>
+                        Sign In
+                    </span>
+                    <span v-else>
+                        <div class="spinner"></div>
+                        Signing In...
+                    </span>
+                </button>
+
+                <!-- Register Link -->
+                <div class="register-link">
+                    <p>Don't have an account? 
+                        <router-link to="/register" class="link">
+                            Create new account
+                        </router-link>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Demo Section -->
+            <div class="demo-section">
+                <div class="demo-divider">
+                    <span>Or try demo version</span>
+                </div>
+                <button @click="fillDemoCredentials" class="demo-btn">
+                    <i class="icon">🎯</i>
+                    Demo Login
+                </button>
             </div>
-          </div>
         </div>
-      </form>
+
+        <!-- Notifications -->
+        <div v-if="showNotification" class="notification" :class="notificationType">
+            <i class="notification-icon">{{ notificationIcon }}</i>
+            <span>{{ notificationMessage }}</span>
+            <button @click="showNotification = false" class="notification-close">×</button>
+        </div>
     </div>
-  </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script>
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 
-const router = useRouter()
-const authStore = useAuthStore()
+export default {
+    name: 'Login',
+    setup() {
+        const router = useRouter()
+        const authStore = useAuthStore()
+        
+        const loading = ref(false)
+        const showPassword = ref(false)
+        const showNotification = ref(false)
+        const notificationMessage = ref('')
+        const notificationType = ref('success')
 
-const form = ref({
-  email: '',
-  password: '',
-  remember: false
-})
+        const form = reactive({
+            email: '',
+            password: '',
+            remember: false
+        })
 
-const isLoading = ref(false)
-const error = ref('')
+        const errors = reactive({
+            email: '',
+            password: ''
+        })
 
-const handleLogin = async () => {
-  isLoading.value = true
-  error.value = ''
+        // Notifications
+        const notificationIcon = computed(() => {
+            return notificationType.value === 'success' ? '✅' : '❌'
+        })
 
-  try {
-    const result = await authStore.login(form.value)
-    
-    if (result.success) {
-      router.push('/')
-    } else {
-      error.value = result.message
+        const showNotificationMessage = (message, type = 'success') => {
+            notificationMessage.value = message
+            notificationType.value = type
+            showNotification.value = true
+            setTimeout(() => {
+                showNotification.value = false
+            }, 5000)
+        }
+
+        // Form Validation
+        const validateForm = () => {
+            let isValid = true
+            
+            // Reset errors
+            errors.email = ''
+            errors.password = ''
+
+            if (!form.email.trim()) {
+                errors.email = 'Email is required'
+                isValid = false
+            } else if (!isValidEmail(form.email)) {
+                errors.email = 'Please enter a valid email'
+                isValid = false
+            }
+
+            if (!form.password) {
+                errors.password = 'Password is required'
+                isValid = false
+            } else if (form.password.length < 6) {
+                errors.password = 'Password must be at least 6 characters'
+                isValid = false
+            }
+
+            return isValid
+        }
+
+        const isValidEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            return emailRegex.test(email)
+        }
+
+        // Login Handler - متوافق مع الـ Store الجديد
+        const handleLogin = async () => {
+            if (!validateForm()) return
+
+            loading.value = true
+
+            try {
+                const result = await authStore.login(form)
+                
+                if (result.success) {
+                    showNotificationMessage('Login successful!', 'success')
+                    
+                    // التوجيه للوحة التحكم
+                    setTimeout(() => {
+                        router.push('/')
+                    }, 1000)
+                } else {
+                    showNotificationMessage(
+                        result.message || 'Login failed. Please check your credentials.', 
+                        'error'
+                    )
+                }
+                
+            } catch (error) {
+                showNotificationMessage(
+                    'An unexpected error occurred. Please try again.', 
+                    'error'
+                )
+                console.error('Login error:', error)
+            } finally {
+                loading.value = false
+            }
+        }
+
+        // Fill demo credentials
+        const fillDemoCredentials = () => {
+            form.email = 'admin@enterprise.com'
+            form.password = 'password123'
+            showNotificationMessage('Demo credentials filled', 'success')
+        }
+
+        return {
+            form,
+            errors,
+            loading,
+            showPassword,
+            showNotification,
+            notificationMessage,
+            notificationType,
+            notificationIcon,
+            handleLogin,
+            fillDemoCredentials
+        }
     }
-  } catch (err) {
-    error.value = 'An unexpected error occurred'
-    console.error('Login error:', err)
-  } finally {
-    isLoading.value = false
-  }
 }
 </script>
+
+<style scoped>
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    position: relative;
+}
+
+.login-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff" fill-opacity="0.05" points="0,1000 1000,0 1000,1000"/></svg>');
+}
+
+.login-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Logo */
+.logo-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.logo-icon {
+    font-size: 32px;
+}
+
+.app-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 5px 0;
+}
+
+.app-subtitle {
+    color: #718096;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Form */
+.login-form {
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input.error {
+    border-color: #e53e3e;
+    background: #fff5f5;
+}
+
+.password-input-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #718096;
+    padding: 5px;
+}
+
+.error-text {
+    color: #e53e3e;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.checkbox-label input {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #cbd5e0;
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label input:checked + .checkmark {
+    background: #667eea;
+    border-color: #667eea;
+}
+
+.checkbox-label input:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.forgot-password {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #5a67d8;
+    text-decoration: underline;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.login-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-btn.loading {
+    background: #a0aec0;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Register Link */
+.register-link {
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+}
+
+.register-link .link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.register-link .link:hover {
+    text-decoration: underline;
+}
+
+/* Demo Section */
+.demo-section {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 25px;
+}
+
+.demo-divider {
+    text-align: center;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.demo-divider span {
+    background: white;
+    padding: 0 15px;
+    color: #718096;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.demo-btn {
+    width: 100%;
+    background: #48bb78;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.demo-btn:hover {
+    background: #38a169;
+    transform: translateY(-1px);
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+    border-left-color: #48bb78;
+}
+
+.notification.error {
+    border-left-color: #e53e3e;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #718096;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 10px;
+    }
+    
+    .login-card {
+        padding: 30px 20px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
+
+/* Icons */
+.icon {
+    font-style: normal;
+}
+</style>
