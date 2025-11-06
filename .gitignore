@@ -1,0 +1,6 @@
+# للمشاريع PHP/Laravel
+echo "vendor/" >> .gitignore
+echo ".env" >> .gitignore
+git add .gitignore
+git commit -m "Add .gitignore"
+git push
