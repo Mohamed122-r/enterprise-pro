@@ -44,6 +44,12 @@ const routes = [
         component: () => import('@/components/Chat/ChatContainer.vue')
       }
     ]
+  },
+  // مسار للصفحات غير الموجودة
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/components/Common/NotFound.vue')
   }
 ]
 
@@ -54,6 +60,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
+
+  // تهيئة المتجر إذا لزم الأمر
+  if (!authStore.user && authStore.token) {
+    authStore.initialize()
+  }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
