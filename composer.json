@@ -1,7 +1,7 @@
 {
     "name": "laravel/laravel",
     "type": "project",
-    "description": "Laravel Enterprise Pro",
+    "description": "Laravel Enterprise Pro Application",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
@@ -60,10 +60,6 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
-}        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
