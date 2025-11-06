@@ -40,9 +40,7 @@
         }
     },
     "scripts": {
-        "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
-        ]
+        "post-autoload-dump": []
     },
     "extra": {
         "laravel": {
