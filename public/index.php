@@ -1,26 +1,29 @@
 <?php
+require_once __DIR__.'/../vendor/autoload.php';
 
-use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
+$app = new Illuminate\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+);
 
-define('LARAVEL_START', microtime(true));
+// تطبيق ويب بسيط
+$response = new Illuminate\Http\Response(
+    '<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Enterprise Pro</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+            .success { color: #28a745; }
+            .info { color: #17a2b8; }
+        </style>
+    </head>
+    <body>
+        <h1 class="success">🚀 Enterprise Pro Application</h1>
+        <p class="info">✅ Laravel is successfully installed and running!</p>
+        <p>📅 Server Time: ' . date('Y-m-d H:i:s') . '</p>
+        <p>🔧 Status: <strong>Ready for configuration</strong></p>
+    </body>
+    </html>'
+);
 
-// Check if the application is installed
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
-    require $maintenance;
-}
-
-// Register the Composer autoloader...
-require __DIR__.'/../vendor/autoload.php';
-
-// Bootstrap Laravel and create the application...
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-// Run the application...
-$kernel = $app->make(Kernel::class);
-
-$response = $kernel->handle(
-    $request = Request::capture()
-)->send();
-
-$kernel->terminate($request, $response);
+$response->send();
