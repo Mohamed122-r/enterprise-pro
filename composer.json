@@ -25,6 +25,7 @@
             "App\\": "app/",
             "App\\Models\\": "app/Http/Models/",
             "App\\Services\\": "app/Http/Services/",
+            "App\\Providers\\": "app/Http/Providers/",
             "App\\Http\\Middleware\\": "app/Http/Controllers/Middleware/",
             "App\\Http\\Requests\\": "app/Http/Controllers/Requests/",
             "App\\Http\\Resources\\": "app/Http/Controllers/Resources/",
@@ -40,8 +41,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
