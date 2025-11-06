@@ -2,7 +2,14 @@
     "$schema": "https://railway.app/railway.schema.json",
     "build": {
         "builder": "NIXPACKS",
-        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && npm install && npm run build"
+        "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && npm install && npm run build",
+        "nixpacksPlan": {
+            "phases": {
+                "setup": {
+                    "aptPackages": ["php8.2", "php8.2-curl", "php8.2-xml", "php8.2-mbstring", "php8.2-zip", "php8.2-sqlite3"]
+                }
+            }
+        }
     },
     "deploy": {
         "startCommand": "php artisan serve --host=0.0.0.0 --port=$PORT",
