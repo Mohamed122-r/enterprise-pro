@@ -2,22 +2,22 @@
     "name": "enterprise-pro/laravel",
     "type": "project",
     "description": "Enterprise Pro - Complete Business Management System",
-    "keywords": ["laravel", "vue", "enterprise"],
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^9.19",
-        "laravel/sanctum": "^2.14",
-        "laravel/tinker": "^2.7"
+        "laravel/framework": "^9.52",
+        "laravel/sanctum": "^2.15",
+        "laravel/tinker": "^2.8"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9.1",
+        "fakerphp/faker": "^1.21",
         "laravel/sail": "^1.18",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.0",
+        "mockery/mockery": "^1.5",
+        "nunomaduro/collision": "^6.4",
         "phpunit/phpunit": "^9.5",
-        "spatie/laravel-ignition": "^1.0"
+        "spatie/laravel-ignition": "^1.6"
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +51,11 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
