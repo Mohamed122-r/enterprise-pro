@@ -3,7 +3,24 @@
 use App\Http\Controllers\Web\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
+// Health check route for Railway (يجب أن يكون أول route)
+Route::get('/', function () {
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Enterprise Pro API is running',
+        'timestamp' => now()
+    ]);
+});
+
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'database' => 'connected'
+    ]);
+});
+
+// Application SPA routes
+Route::get('/welcome', [HomeController::class, 'welcome'])->name('welcome');
 
 // Authentication routes
 Route::get('/login', [HomeController::class, 'index'])->name('login');
