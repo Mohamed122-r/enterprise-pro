@@ -1,13 +1,13 @@
-[build]
-builder = "heroku/buildpacks:20"
+[builder]
+name = "heroku/buildpacks:20"
 
-[build.environment]
-PHP_VERSION = "8.2.0"
+[build]
+phpVersion = "8.2.0"
 
 [deploy]
 startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
-healthcheckPath = "/"
-healthcheckTimeout = 300
+healthCheckPath = "/"
+healthCheckTimeout = 300
 
 [[services]]
 name = "web"
