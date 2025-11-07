@@ -5,9 +5,9 @@ name = "heroku/buildpacks:20"
 phpVersion = "8.2.0"
 
 [deploy]
-startCommand = "php -S 0.0.0.0:$PORT -t public"
+startCommand = "php -S 0.0.0.0:8000 -t public"
 healthCheckPath = "/"
-healthCheckTimeout = 300
+healthCheckTimeout = 30
 
 [[services]]
 name = "web"
