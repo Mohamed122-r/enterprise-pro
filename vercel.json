@@ -1,19 +1,18 @@
+# أنشئ ملف vercel.json
+cat > vercel.json << 'EOF'
 {
   "version": 2,
   "builds": [
     {
       "src": "public/**",
       "use": "@vercel/static"
-    },
-    {
-      "src": "index.php",
-      "use": "@vercel/php"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.php"
+      "dest": "/public/$1"
     }
   ]
 }
+EOF
