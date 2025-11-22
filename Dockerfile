@@ -2,9 +2,9 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# تثبيت Node.js
+# تثبيت Node.js بشكل صحيح
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs npm
+RUN apt-get update && apt-get install -y nodejs
 
 # تثبيت إضافات PHP
 RUN docker-php-ext-install pdo pdo_mysql
