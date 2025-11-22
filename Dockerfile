@@ -2,18 +2,22 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# تثبيت الأدوات الأساسية أولاً
+# تثبيت المتطلبات الأساسية بما فيها libzip
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    curl
+    curl \
+    libzip-dev \
+    zip \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip
 
 # تثبيت Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
-# تثبيت إضافات PHP
-RUN docker-php-ext-install pdo pdo_mysql zip
+# تثبيت إضافات PHP الأخرى
+RUN docker-php-ext-install pdo pdo_mysql
 RUN a2enmod rewrite
 
 # نسخ المشروع
