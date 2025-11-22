@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: enterprise-pro
+    env: docker
+    plan: free
+    region: frankfurt
+    docker:
+      dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: APP_KEY
+        generateValue: true
+
+databases:
+  - name: enterpriseprodb
+    plan: free
+    databaseName: enterprisepro
+    user: enterprisepro_user
