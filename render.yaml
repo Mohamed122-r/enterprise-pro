@@ -1,7 +1,7 @@
 services:
   - type: web
     name: enterprise-pro
-    env: php
+    env: node
     plan: free
     region: frankfurt
     buildCommand: |
