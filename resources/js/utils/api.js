@@ -1,10 +1,10 @@
-// resources/js/utils/api.js
-
 import axios from 'axios'
 
-// إعداد axios الأساسي
+// إعداد axios الأساسي مع دعم متغيرات البيئة
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: API_BASE_URL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -19,6 +19,15 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
+        
+        // إضافة timestamp لمنع التخزين المؤقت
+        if (config.method === 'get') {
+            config.params = {
+                ...config.params,
+                _t: Date.now()
+            }
+        }
+        
         return config
     },
     (error) => {
@@ -32,16 +41,24 @@ api.interceptors.response.use(
         return response.data
     },
     (error) => {
+        // معالجة الأخطاء
         if (error.response?.status === 401) {
             localStorage.removeItem('auth_token')
             localStorage.removeItem('user')
-            window.location.href = '/login'
+            // إعادة التوجيه للواجهة الأمامية فقط
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login'
+            }
         }
+        
+        // خطأ في الاتصال بالخادم
+        if (error.code === 'NETWORK_ERROR' || error.code === 'ECONNREFUSED') {
+            console.warn('الخادم غير متاح، تأكد من تشغيل Laravel Backend')
+        }
+        
         return Promise.reject(error.response?.data || error)
     }
 )
-
-// APIs الأساسية
 
 // Authentication API
 export const authApi = {
@@ -241,91 +258,4 @@ export const reportApi = {
     }),
 
     // تقارير الحضور
-    attendance: (params = {}) => api.get('/reports/attendance', { params }),
-    attendanceExport: (params = {}) => api.get('/reports/attendance/export', {
-        params,
-        responseType: 'blob'
-    }),
-
-    // تقارير مالية
-    financial: (params = {}) => api.get('/reports/financial', { params }),
-    financialExport: (params = {}) => api.get('/reports/financial/export', {
-        params,
-        responseType: 'blob'
-    }),
-
-    // تقارير العملاء
-    customers: (params = {}) => api.get('/reports/customers', { params }),
-    customersExport: (params = {}) => api.get('/reports/customers/export', {
-        params,
-        responseType: 'blob'
-    })
-}
-
-// Dashboard API
-export const dashboardApi = {
-    getStats: () => api.get('/dashboard/stats'),
-    getRecentActivities: () => api.get('/dashboard/recent-activities'),
-    getChartsData: (period = 'monthly') => api.get('/dashboard/charts', { params: { period } })
-}
-
-// Notifications API
-export const notificationApi = {
-    getAll: (params = {}) => api.get('/notifications', { params }),
-    getUnread: () => api.get('/notifications/unread'),
-    markAsRead: (id) => api.patch(`/notifications/${id}/read`),
-    markAllAsRead: () => api.patch('/notifications/mark-all-read'),
-    getCount: () => api.get('/notifications/count')
-}
-
-// File Upload API
-export const uploadApi = {
-    upload: (file, options = {}) => {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        if (options.folder) {
-            formData.append('folder', options.folder)
-        }
-
-        return api.post('/upload', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-            onUploadProgress: options.onProgress
-        })
-    },
-    delete: (filePath) => api.delete('/upload', { data: { path: filePath } })
-}
-
-// Utilities
-export const apiUtils = {
-    // تحميل الملفات
-    downloadFile: (url, filename) => {
-        return api.get(url, { responseType: 'blob' }).then(response => {
-            const blob = new Blob([response])
-            const link = document.createElement('a')
-            link.href = URL.createObjectURL(blob)
-            link.download = filename
-            link.click()
-            URL.revokeObjectURL(link.href)
-        })
-    },
-
-    // إلغاء الطلبات
-    createCancelToken: () => {
-        return axios.CancelToken.source()
-    },
-
-    // تحويل params إلى query string
-    toQueryString: (params) => {
-        const searchParams = new URLSearchParams()
-        Object.keys(params).forEach(key => {
-            if (params[key] !== null && params[key] !== undefined) {
-                searchParams.append(key, params[key])
-            }
-        })
-        return searchParams.toString()
-    }
-}
-
-// Export default axios instance for custom requests
-export default api
+    attendance: (params = {}) => api.get
