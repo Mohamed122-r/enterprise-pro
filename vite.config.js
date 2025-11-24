@@ -8,6 +8,28 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
-        vue(),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
     ],
+    build: {
+        outDir: 'dist',
+        emptyOutDir: true,
+        rollupOptions: {
+            input: {
+                app: 'resources/js/app.js'
+            }
+        }
+    },
+    resolve: {
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+            '@': '/resources/js'
+        },
+    },
 });
